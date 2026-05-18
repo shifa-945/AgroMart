@@ -59,8 +59,13 @@ function AddProducts() {
       "minimumOrderQuantity",
       products.minimumOrderQuantity
     );
-    formData.append("description", products.description);
-    formData.append("image", products.image);
+  formData.append("description", products.description);
+formData.append("image", products.image);
+
+formData.append(
+  "farmer",
+  localStorage.getItem("farmerId")
+);
 
     try {
 

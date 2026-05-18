@@ -43,7 +43,12 @@ const Navbar = () => {
           FARMER
         </Link>
 
-        <span>CUSTOMER</span>
+     <Link
+  to="/customer/customerregister"
+  style={{ textDecoration: "none", color: "black" }}
+>
+  CUSTOMER
+</Link>
 
         <div style={{ display: 'flex', gap: '15px', marginLeft: '10px' }}>
           👤 ❤️ 🛒

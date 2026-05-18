@@ -41,6 +41,8 @@ const FarmerRegister = () => {
       console.log(error.response.data);
       alert("Something went wrong");
 
+      
+
     }
 
   };

@@ -60,6 +60,15 @@ class FarmerProfile(models.Model):
 
 class Product(models.Model):
 
+    # CONNECT PRODUCT TO FARMER
+    farmer = models.ForeignKey(
+        FarmerProfile,
+        on_delete=models.CASCADE,
+        related_name="products",
+        null=True,
+        blank=True
+    )
+
     name = models.CharField(max_length=200)
 
     category = models.CharField(max_length=100)
@@ -89,3 +98,104 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Customer(models.Model):
+
+    full_name = models.CharField(max_length=100)
+
+    phone = models.CharField(max_length=15)
+
+    email = models.EmailField(unique=True)
+
+    address = models.TextField()
+
+    password = models.CharField(max_length=100)
+
+    confirm_password = models.CharField(max_length=100)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.full_name
+    
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class Order(models.Model):
+
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE
+    )
+
+    quantity = models.IntegerField()
+
+    total_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    full_name = models.CharField(max_length=100)
+
+    phone = models.CharField(max_length=15)
+
+    address = models.TextField()
+
+    city = models.CharField(max_length=100)
+
+    district = models.CharField(max_length=100)
+
+    state = models.CharField(max_length=100)
+
+    pincode = models.CharField(max_length=10)
+
+    payment_method = models.CharField(max_length=50)
+
+    order_status = models.CharField(
+        max_length=50,
+        default="Pending"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.full_name
+    
+
+
+class Cart(models.Model):
+
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE
+    )
+
+    quantity = models.IntegerField(default=1)
+
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.product.name
+
+
+
+
+    

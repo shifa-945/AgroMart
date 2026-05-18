@@ -76,11 +76,13 @@ useEffect(() => {
 
         {/* MENU */}
         <div className="mt-6 px-4 space-y-2">
-
+          
+          <Link to='dashboard'>
           <button className="flex items-center gap-3 w-full bg-green-100 text-green-700 px-4 py-3 rounded-xl font-medium">
             <Home size={20} />
             Dashboard
           </button>
+          </Link>
 
           <Link to="/farmer/profile" className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition"
          >
@@ -94,21 +96,27 @@ useEffect(() => {
     Add Product
   </button>
 </Link>
-
+          
+          <Link to="farmerproducts">
           <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
             <Package size={20} />
             My Products
           </button>
-
+          </Link>
+          
+          <Link to="/farmer/orders">
           <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
             <ShoppingBag size={20} />
             Orders
           </button>
+          </Link>
 
-          <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
-            <IndianRupee size={20} />
-            Earnings
-          </button>
+          <Link to="/farmer/earnings">
+            <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
+              <IndianRupee size={20} />
+              Earnings
+            </button>
+          </Link>
 
           <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
             <MessageSquare size={20} />
