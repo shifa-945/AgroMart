@@ -105,7 +105,7 @@ function FarmerProducts() {
                 <div className="bg-orange-50 px-3 py-1 rounded-lg">
 
                   <p className="text-sm text-orange-600 font-medium">
-                    {product.stockQuantity} Left
+                    {product.remaining_stock} Left
                   </p>
 
                 </div>

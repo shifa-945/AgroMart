@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
-from .serializers import FarmerProfileSerializer,ProductSerializer,ReviewSerializer
-from .models import FarmerProfile,Product,Review,Cart
+from .serializers import FarmerProfileSerializer,ProductSerializer,ReviewSerializer, WishlistSerializer
+from .models import FarmerProfile,Product,Review,Cart, Wishlist
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Customer,Order
@@ -185,3 +185,78 @@ def update_order_status(request, order_id):
 
     except Order.DoesNotExist:
         return Response({"error": "not found"}, status=404)
+    
+
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Order
+
+
+@api_view(['GET'])
+def customer_orders(request, customer_id):
+
+    orders = Order.objects.filter(customer_id=customer_id)
+
+    order_data = []
+
+    for order in orders:
+
+        order_data.append({
+
+            "id": order.id,
+
+            "product_name": order.product.name,
+
+            "product_image": request.build_absolute_uri(
+                order.product.image.url
+            ) if order.product.image else None,
+
+            "quantity": order.quantity,
+
+            "total_price": order.total_price,
+
+            "order_status": order.order_status,
+
+            "farmer_name": order.product.farmer.full_name,
+
+            "created_at": order.created_at.strftime("%d-%m-%Y"),
+
+        })
+
+    return Response(order_data)
+
+
+
+@api_view(["POST"])
+def toggle_wishlist(request):
+
+    customer_id = request.data["customer"]
+    product_id = request.data["product"]
+
+    item = Wishlist.objects.filter(
+        customer_id=customer_id,
+        product_id=product_id
+    )
+
+    if item.exists():
+        item.delete()
+        return Response({"liked": False})
+
+    Wishlist.objects.create(
+        customer_id=customer_id,
+        product_id=product_id
+    )
+
+    return Response({"liked": True})
+
+
+
+@api_view(["GET"])
+def get_wishlist(request, customer_id):
+
+    wishlist = Wishlist.objects.filter(customer_id=customer_id)
+
+    serializer = WishlistSerializer(wishlist, many=True)
+
+    return Response(serializer.data)

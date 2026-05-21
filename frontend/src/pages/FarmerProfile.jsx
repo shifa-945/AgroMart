@@ -99,40 +99,36 @@ useEffect(() => {
 
   // SAVE FUNCTION (FIXED)
   const handleSaveProfile = async () => {
-    try {
-      const form = new FormData();
+  try {
+    const form = new FormData();
 
-      Object.keys(formData).forEach((key) => {
-        form.append(key, formData[key]);
-      });
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key] ?? "");
+    });
 
-       if (profilePhotoFile) {
+    // ✅ IMPORTANT FIX: REMOVE empty file fields issue
+    if (profilePhotoFile) {
       form.append("profile_photo", profilePhotoFile);
     }
 
-      const res = await axios.patch(
-        `http://127.0.0.1:8000/api/farmers/${farmerId}/`,
-        
-        form,
-        
-        {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+    const res = await axios.patch(
+      `http://127.0.0.1:8000/api/farmers/${farmerId}/`,
+      form,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data"
         }
-        
-      );
-     console.log(res.data);
+      }
+    );
 
-      alert("Profile Saved Successfully!");
-      console.log(res.data);
+    console.log(res.data);
+    alert("Profile Saved Successfully!");
 
-    } catch (err) {
-      console.log(err.response?.data);
-      alert("Save Failed");
-    }
-  };
-
+  } catch (err) {
+    console.log(err.response?.data);
+    alert("Save Failed");
+  }
+};
   return (
     <div className="flex-1 bg-gray-100 p-3 sm:p-5 lg:p-8 min-h-screen overflow-y-auto">
 

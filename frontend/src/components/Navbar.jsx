@@ -44,7 +44,7 @@ const Navbar = () => {
         </Link>
 
      <Link
-  to="/customer/customerregister"
+  to="/customerregister"
   style={{ textDecoration: "none", color: "black" }}
 >
   CUSTOMER

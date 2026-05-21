@@ -276,7 +276,7 @@ function CustomerRegistration() {
 
                 <span className="text-green-700 font-bold cursor-pointer hover:underline ml-1">
 
-                  <Link to="/customer/Login">
+                   <Link to="/CustomerLogin">
                     Login
                   </Link>
 

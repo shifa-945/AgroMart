@@ -23,7 +23,7 @@ function FarmerDashboard() {
 
   const farmerId = localStorage.getItem("farmerId");
 
-  // FETCH DASHBOARD DATA
+  // ================= FETCH DATA =================
 
   useEffect(() => {
 
@@ -35,7 +35,7 @@ function FarmerDashboard() {
 
   }, []);
 
-  // FETCH FARMER
+  // ================= FETCH FARMER =================
 
   const fetchFarmer = async () => {
 
@@ -52,10 +52,9 @@ function FarmerDashboard() {
       console.log(err);
 
     }
-
   };
 
-  // FETCH FARMER PRODUCTS
+  // ================= FETCH PRODUCTS =================
 
   const fetchProducts = async () => {
 
@@ -72,10 +71,9 @@ function FarmerDashboard() {
       console.log(err);
 
     }
-
   };
 
-  // FETCH ORDERS
+  // ================= FETCH ORDERS =================
 
   const fetchOrders = async () => {
 
@@ -111,7 +109,6 @@ function FarmerDashboard() {
       console.log(err);
 
     }
-
   };
 
   return (
@@ -165,21 +162,15 @@ function FarmerDashboard() {
           </div>
 
           <h2 className="text-gray-500 mt-5">
-
             Total Products
-
           </h2>
 
           <h1 className="text-4xl font-bold mt-2">
-
             {totalProducts}
-
           </h1>
 
           <p className="text-green-600 mt-2 font-medium">
-
             Active Listings
-
           </p>
 
         </div>
@@ -195,21 +186,15 @@ function FarmerDashboard() {
           </div>
 
           <h2 className="text-gray-500 mt-5">
-
             Total Orders
-
           </h2>
 
           <h1 className="text-4xl font-bold mt-2">
-
             {totalOrders}
-
           </h1>
 
           <p className="text-blue-600 mt-2 font-medium">
-
             Total Customer Orders
-
           </p>
 
         </div>
@@ -225,21 +210,15 @@ function FarmerDashboard() {
           </div>
 
           <h2 className="text-gray-500 mt-5">
-
             Total Earnings
-
           </h2>
 
           <h1 className="text-4xl font-bold mt-2">
-
             ₹{totalEarnings}
-
           </h1>
 
           <p className="text-yellow-600 mt-2 font-medium">
-
             Customer Purchases
-
           </p>
 
         </div>
@@ -255,28 +234,22 @@ function FarmerDashboard() {
           </div>
 
           <h2 className="text-gray-500 mt-5">
-
             Product Views
-
           </h2>
 
           <h1 className="text-4xl font-bold mt-2">
-
             {totalProducts * 10}
-
           </h1>
 
           <p className="text-purple-600 mt-2 font-medium">
-
             Estimated Views
-
           </p>
 
         </div>
 
       </div>
 
-      {/* RECENT ORDERS SECTION */}
+      {/* RECENT ORDERS */}
 
       <div className="grid grid-cols-1 gap-6">
 
@@ -387,8 +360,6 @@ function FarmerDashboard() {
                           ? "bg-green-100 text-green-700"
                           : order.order_status === "Shipped"
                           ? "bg-yellow-100 text-yellow-700"
-                          : order.order_status === "Accepted"
-                          ? "bg-blue-100 text-blue-700"
                           : "bg-gray-100 text-gray-700"
                       }`}
                     >
@@ -414,7 +385,6 @@ function FarmerDashboard() {
     </div>
 
   );
-
 }
 
 export default FarmerDashboard;

@@ -40,24 +40,27 @@ function ProductDetails() {
 
   }, [id]);
 
-  const fetchProduct = async () => {
+ const fetchProduct = async () => {
 
-    try {
+  try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/products/${id}/`
-      );
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/products/${id}/`
+    );
 
-      setProduct(res.data);
+    console.log(res.data)
 
-    } catch (err) {
+    console.log(res.data.farmer_details)
 
-      console.log(err);
+    setProduct(res.data);
 
-    }
+  } catch (err) {
 
-  };
+    console.log(err);
 
+  }
+
+};
   // ================= FETCH REVIEWS =================
 
   const fetchReviews = async () => {
@@ -138,78 +141,7 @@ function ProductDetails() {
 
       {/* ================= MENU BAR ================= */}
 
-      <div className="bg-white shadow-md sticky top-0 z-50">
-
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-
-          {/* LEFT MENU */}
-
-          <div className="flex items-center gap-8">
-
-            <button className="bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-
-              <Menu size={18} />
-
-              Categories
-
-            </button>
-
-            <button
-              onClick={() =>
-                navigate("/customer/home")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Home
-            </button>
-
-            <button
-              onClick={() =>
-                navigate("/customer/home")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Fruits
-            </button>
-
-            <button
-              onClick={() =>
-                navigate("/customer/home")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Vegetables
-            </button>
-
-            <button
-              onClick={() =>
-                navigate("/customer/home")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Organic
-            </button>
-
-          </div>
-
-          {/* RIGHT ICONS */}
-
-          <div className="flex items-center gap-6">
-
-            <Heart className="text-gray-700 cursor-pointer hover:text-red-500" />
-
-            <ShoppingCart
-              onClick={() =>
-                navigate("/customer/cart")
-              }
-              className="text-green-700 cursor-pointer hover:text-green-800"
-            />
-
-          </div>
-
-        </div>
-
-      </div>
+    
 
       {/* ================= PRODUCT SECTION ================= */}
 
@@ -357,55 +289,49 @@ function ProductDetails() {
         </div>
 
         {/* ================= FARMER DETAILS ================= */}
+{/* ================= FARMER DETAILS ================= */}
 
-        {product.farmer && (
+<div className="max-w-6xl mx-auto mt-6 bg-white shadow-md rounded-xl p-6">
 
-          <div className="max-w-6xl mx-auto mt-6 bg-white shadow-md rounded-xl p-6">
+  <h2 className="text-xl font-bold text-green-700 mb-4">
+    Farmer Details
+  </h2>
 
-            <h2 className="text-xl font-bold text-green-700 mb-4">
+  <div className="grid md:grid-cols-2 gap-4 text-gray-700">
 
-              Farmer Details
+    <p>
+      <b>Name:</b>{" "}
+      {product?.farmer_details?.full_name}
+    </p>
 
-            </h2>
+    <p>
+      <b>Farm:</b>{" "}
+      {product?.farmer_details?.farm_name}
+    </p>
 
-            <div className="grid md:grid-cols-2 gap-4 text-gray-700">
+    <p>
+      <b>Phone:</b>{" "}
+      {product?.farmer_details?.phone}
+    </p>
 
-              <p>
-                <b>Name:</b>{" "}
-                {product.farmer.full_name}
-              </p>
+    <p>
+      <b>Village:</b>{" "}
+      {product?.farmer_details?.village}
+    </p>
 
-              <p>
-                <b>Farm:</b>{" "}
-                {product.farmer.farm_name}
-              </p>
+    <p>
+      <b>District:</b>{" "}
+      {product?.farmer_details?.district}
+    </p>
 
-              <p>
-                <b>Phone:</b>{" "}
-                {product.farmer.phone}
-              </p>
+    <p>
+      <b>State:</b>{" "}
+      {product?.farmer_details?.state}
+    </p>
 
-              <p>
-                <b>Village:</b>{" "}
-                {product.farmer.village}
-              </p>
+  </div>
 
-              <p>
-                <b>District:</b>{" "}
-                {product.farmer.district}
-              </p>
-
-              <p>
-                <b>State:</b>{" "}
-                {product.farmer.state}
-              </p>
-
-            </div>
-
-          </div>
-
-        )}
-
+</div>
         {/* ================= REVIEW SECTION ================= */}
 
         <div className="max-w-6xl mx-auto mt-6 bg-white shadow-lg rounded-xl p-6">

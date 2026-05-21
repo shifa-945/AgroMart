@@ -21,18 +21,56 @@ function CustomerHome() {
   const customerId =
     localStorage.getItem("customerId");
 
+  // ================= WISHLIST ADDED (ONLY NEW PART) =================
+  const [wishlist, setWishlist] = useState([]);
+
   useEffect(() => {
-
     fetchProducts();
-
+    fetchWishlist();
   }, []);
 
-  // ================= FETCH PRODUCTS =================
+  const fetchWishlist = async () => {
+    try {
+      const res = await axios.get(
+        `http://127.0.0.1:8000/api/wishlist/${customerId}/`
+      );
 
-  const fetchProducts = async () => {
+      setWishlist(res.data);
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const toggleWishlist = async (productId, e) => {
+    e.stopPropagation();
 
     try {
+      await axios.post(
+        "http://127.0.0.1:8000/api/wishlist/toggle/",
+        {
+          customer: Number(customerId),
+          product: Number(productId),
+        }
+      );
 
+      fetchWishlist(); // refresh
+
+    } catch (err) {
+      console.log(err.response?.data);
+    }
+  };
+
+  const isLiked = (productId) => {
+    return wishlist.some(
+      (item) => item.product.id === productId
+    );
+  };
+  // ================================================================
+
+  // ================= FETCH PRODUCTS =================
+  const fetchProducts = async () => {
+    try {
       const res = await axios.get(
         "http://127.0.0.1:8000/api/products/"
       );
@@ -40,15 +78,11 @@ function CustomerHome() {
       setProducts(res.data);
 
     } catch (err) {
-
       console.log(err);
-
     }
-
   };
 
   // ================= ADD TO CART =================
-
   const handleAddToCart = async (
     productId,
     e
@@ -78,7 +112,6 @@ function CustomerHome() {
   };
 
   // ================= CATEGORY LIST =================
-
   const categories = [
     {
       name: "All",
@@ -112,13 +145,9 @@ function CustomerHome() {
   ];
 
   // ================= FILTER PRODUCTS =================
-
   const filteredProducts =
-
     selectedCategory === "All"
-
       ? products
-
       : products.filter(
           (p) =>
             p.category === selectedCategory
@@ -128,84 +157,7 @@ function CustomerHome() {
 
     <div className="min-h-screen bg-gray-50">
 
-      {/* ================= MENU BAR ================= */}
-
-      <div className="bg-white shadow-md sticky top-0 z-50">
-
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-
-          {/* LEFT MENU */}
-
-          <div className="flex items-center gap-8">
-
-            <button className="bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-
-              <Menu size={18} />
-
-              Categories
-
-            </button>
-
-            <button
-              onClick={() =>
-                setSelectedCategory("All")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Home
-            </button>
-
-            <button
-              onClick={() =>
-                setSelectedCategory("Fruits")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Fruits
-            </button>
-
-            <button
-              onClick={() =>
-                setSelectedCategory("Vegetables")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Vegetables
-            </button>
-
-            <button
-              onClick={() =>
-                setSelectedCategory("Leafy")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Organic
-            </button>
-
-          </div>
-
-          {/* RIGHT ICONS */}
-
-          <div className="flex items-center gap-6">
-
-            <Heart className="text-gray-700 cursor-pointer hover:text-red-500" />
-
-            <ShoppingCart
-              onClick={() =>
-                navigate("/customer/cart")
-              }
-              className="text-green-700 cursor-pointer hover:text-green-800"
-            />
-
-          </div>
-
-        </div>
-
-      </div>
-
-     
       {/* ================= PRODUCTS ================= */}
-
       <div className="max-w-7xl mx-auto px-4 pb-10">
 
         <div className="flex justify-between items-center mb-6">
@@ -242,7 +194,6 @@ function CustomerHome() {
             >
 
               {/* IMAGE */}
-
               <div className="relative">
 
                 <img
@@ -251,16 +202,26 @@ function CustomerHome() {
                   alt={p.name}
                 />
 
-                <button className="absolute top-3 right-3 bg-white p-2 rounded-full shadow">
-
-                  <Heart size={16} />
-
+                {/* ❤️ WISHLIST (UPDATED) */}
+                <button
+                  onClick={(e) =>
+                    toggleWishlist(p.id, e)
+                  }
+                  className="absolute top-3 right-3 bg-white p-2 rounded-full shadow"
+                >
+                  <Heart
+                    size={16}
+                    className={
+                      isLiked(p.id)
+                        ? "text-red-500 fill-red-500"
+                        : "text-gray-400"
+                    }
+                  />
                 </button>
 
               </div>
 
               {/* CONTENT */}
-
               <div className="p-4">
 
                 <h3 className="font-bold text-lg text-gray-800 truncate">
@@ -307,7 +268,6 @@ function CustomerHome() {
                 </div>
 
                 {/* ADD TO CART */}
-
                 <button
 
                   onClick={(e) =>

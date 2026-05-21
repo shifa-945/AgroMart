@@ -10,11 +10,16 @@ import {
   FileText,
 } from "lucide-react";
 
-import { useParams } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+} from "react-router-dom";
 
 function FarmerViewProducts() {
 
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
 
@@ -22,12 +27,13 @@ function FarmerViewProducts() {
 
   useEffect(() => {
 
-   const farmerId = localStorage.getItem("farmerId");
+    const farmerId = localStorage.getItem("farmerId");
 
-axios
-  .get(
-    `http://127.0.0.1:8000/api/products/${id}/?farmer=${farmerId}`
-  )
+    axios
+      .get(
+        `http://127.0.0.1:8000/api/products/${id}/?farmer=${farmerId}`
+      )
+
       .then((res) => {
 
         setProduct(res.data);
@@ -42,7 +48,44 @@ axios
 
   }, [id]);
 
-  // LOADING
+  // ================= EDIT PRODUCT =================
+
+  const handleEdit = () => {
+
+    navigate(`/farmer/editproduct/${product.id}`);
+
+  };
+
+  // ================= DELETE PRODUCT =================
+
+  const handleDelete = async () => {
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+
+      await axios.delete(
+        `http://127.0.0.1:8000/api/products/${product.id}/`
+      );
+
+      alert("Product deleted successfully");
+
+      navigate("/farmer/farmerproducts");
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Failed to delete product");
+
+    }
+  };
+
+  // ================= LOADING =================
 
   if (!product) {
 
@@ -237,7 +280,10 @@ axios
 
           {/* EDIT BUTTON */}
 
-          <button className="flex-1 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 py-5 rounded-2xl flex items-center justify-center gap-3 transition">
+          <button
+            onClick={handleEdit}
+            className="flex-1 border-2 border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 py-5 rounded-2xl flex items-center justify-center gap-3 transition"
+          >
 
             <Pencil
               size={22}
@@ -252,7 +298,10 @@ axios
 
           {/* DELETE BUTTON */}
 
-          <button className="flex-1 bg-green-600 hover:bg-green-700 py-5 rounded-2xl flex items-center justify-center gap-3 transition">
+          <button
+            onClick={handleDelete}
+            className="flex-1 bg-green-600 hover:bg-green-700 py-5 rounded-2xl flex items-center justify-center gap-3 transition"
+          >
 
             <Trash2
               size={22}

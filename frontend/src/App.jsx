@@ -30,6 +30,9 @@ import ProductOrder from "./pages/ProductOrder";
 import CustomerCart from "./pages/CustomerCart";
 import FarmerOrders from "./Pages/FarmerOrders";
 import FarmerEarnings from './pages/FarmerEarnings';
+import CustomerOrders from './pages/CustomerOrders';
+import EditProduct from "./pages/EditProduct";
+import CustomerWishlist from "./pages/CustomerWishlist";
 const router = createBrowserRouter([
 
   // MAIN LAYOUT
@@ -87,10 +90,10 @@ const router = createBrowserRouter([
         loader: productLoader,
       },
 
-      {
-        path: "farmerView/:id",
-        element: <FarmerViewProducts />,
-      },
+    {
+  path: "farmerView/:id",
+  element: <FarmerViewProducts />,
+},
 
       {
   path: "orders",
@@ -100,12 +103,26 @@ const router = createBrowserRouter([
      {
   path: "earnings",
   element: <FarmerEarnings />,
-}
+},
 
+
+{
+  path: "editproduct/:id",
+  element: <EditProduct />,
+},
     ],
   },
 
   // CUSTOMER LAYOUT
+  {
+    path:'/CustomerLogin',
+    element:<CustomerLogin/>
+  },
+
+     {
+        path: "customerregister",
+        element: <CustomerRegistration />,
+      },
 
   {
     path: "/customer",
@@ -115,15 +132,9 @@ const router = createBrowserRouter([
 
       
 
-      {
-        path: "customerregister",
-        element: <CustomerRegistration />,
-      },
+   
 
-      {
-        path:'Login',
-        element:<CustomerLogin/>
-      },
+      
 
       {
   path: "dashboard",
@@ -151,7 +162,12 @@ const router = createBrowserRouter([
 
 {
   path: "orders",
-  element: <FarmerOrders />,
+  element: <CustomerOrders />,
+},
+
+{
+  path: "/customer/wishlist",
+  element: <CustomerWishlist />
 }
 
      

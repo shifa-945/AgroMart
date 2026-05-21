@@ -4,9 +4,10 @@ import {
   Menu,
   Heart,
   ShoppingCart,
+  User,
 } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 function CustomerCart() {
 
@@ -87,80 +88,7 @@ function CustomerCart() {
 
     <div className="bg-gray-50 min-h-screen">
 
-      {/* ================= MENU BAR ================= */}
-
-      <div className="bg-white shadow-md sticky top-0 z-50">
-
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-
-          {/* LEFT MENU */}
-
-          <div className="flex items-center gap-8">
-
-            <button className="bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-
-              <Menu size={18} />
-
-              Categories
-
-            </button>
-
-            <button
-              onClick={() =>
-                navigate("/customer/home")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Home
-            </button>
-
-            <button
-              onClick={() =>
-                navigate("/customer/home")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Fruits
-            </button>
-
-            <button
-              onClick={() =>
-                navigate("/customer/home")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Vegetables
-            </button>
-
-            <button
-              onClick={() =>
-                navigate("/customer/home")
-              }
-              className="hover:text-green-700 font-medium"
-            >
-              Organic
-            </button>
-
-          </div>
-
-          {/* RIGHT ICONS */}
-
-          <div className="flex items-center gap-6">
-
-            <Heart className="text-gray-700 cursor-pointer hover:text-red-500" />
-
-            <ShoppingCart
-              onClick={() =>
-                navigate("/customer/cart")
-              }
-              className="text-green-700 cursor-pointer hover:text-green-800"
-            />
-
-          </div>
-
-        </div>
-
-      </div>
+     
 
       {/* ================= CART SECTION ================= */}
 
