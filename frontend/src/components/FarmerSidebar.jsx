@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -17,39 +17,52 @@ import {
 function FarmerSidebar() 
 {
   const [profileImage, setProfileImage] = useState("/farmer.png");
-const [farmerName, setFarmerName] = useState("");
+  const [farmerName, setFarmerName] = useState("");
 
-const farmerId = localStorage.getItem("farmerId");
+  const farmerId = localStorage.getItem("farmerId");
 
-useEffect(() => {
+  const navigate = useNavigate()
 
-  const fetchFarmer = async () => {
+  useEffect(() => {
 
-    try {
+    const fetchFarmer = async () => {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/farmers/${farmerId}/`
-      );
+      try {
 
-      setFarmerName(res.data.full_name);
+        const res = await axios.get(
+          `http://127.0.0.1:8000/api/farmers/${farmerId}/`
+        );
 
-      if (res.data.profile_photo) {
+        setFarmerName(res.data.full_name);
 
-        setProfileImage(res.data.profile_photo);
+        if (res.data.profile_photo) {
+
+          setProfileImage(res.data.profile_photo);
+
+        }
+
+      } catch (err) {
+
+        console.log(err);
 
       }
 
-    } catch (err) {
+    };
 
-      console.log(err);
+    fetchFarmer();
 
-    }
+  }, []);
 
-  };
+  // LOGOUT FUNCTION
+  const handleLogout = () => {
 
-  fetchFarmer();
+    localStorage.removeItem("farmerId")
 
-}, []);
+    alert("Logout successful")
+
+    navigate("/farmerlogin")
+
+  }
 
   return (
     <div className="w-72 h-screen sticky top-0 bg-white border-r border-gray-200 shadow-sm flex flex-col justify-between overflow-y-auto">
@@ -66,7 +79,7 @@ useEffect(() => {
           />
 
           <h2 className="mt-4 text-xl font-bold text-gray-800">
-            Ramesh Kumar
+            {farmerName}
           </h2>
 
           <span className="mt-2 px-4 py-1 bg-green-100 text-green-700 text-sm rounded-full">
@@ -78,37 +91,39 @@ useEffect(() => {
         <div className="mt-6 px-4 space-y-2">
           
           <Link to='dashboard'>
-          <button className="flex items-center gap-3 w-full bg-green-100 text-green-700 px-4 py-3 rounded-xl font-medium">
-            <Home size={20} />
-            Dashboard
-          </button>
+            <button className="flex items-center gap-3 w-full bg-green-100 text-green-700 px-4 py-3 rounded-xl font-medium">
+              <Home size={20} />
+              Dashboard
+            </button>
           </Link>
 
-          <Link to="/farmer/profile" className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition"
-         >
-         <User size={20} />
-         My Profile
-         </Link>
+          <Link 
+            to="/farmer/profile" 
+            className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition"
+          >
+            <User size={20} />
+            My Profile
+          </Link>
 
-         <Link to="addproduct">
-  <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
-    <PlusSquare size={20} />
-    Add Product
-  </button>
-</Link>
+          <Link to="addproduct">
+            <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
+              <PlusSquare size={20} />
+              Add Product
+            </button>
+          </Link>
           
           <Link to="farmerproducts">
-          <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
-            <Package size={20} />
-            My Products
-          </button>
+            <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
+              <Package size={20} />
+              My Products
+            </button>
           </Link>
           
           <Link to="/farmer/orders">
-          <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
-            <ShoppingBag size={20} />
-            Orders
-          </button>
+            <button className="flex items-center gap-3 w-full hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-xl transition">
+              <ShoppingBag size={20} />
+              Orders
+            </button>
           </Link>
 
           <Link to="/farmer/earnings">
@@ -133,7 +148,10 @@ useEffect(() => {
             Settings
           </button>
 
-          <button className="flex items-center gap-3 w-full hover:bg-red-100 text-red-600 px-4 py-3 rounded-xl transition">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full hover:bg-red-100 text-red-600 px-4 py-3 rounded-xl transition"
+          >
             <LogOut size={20} />
             Logout
           </button>

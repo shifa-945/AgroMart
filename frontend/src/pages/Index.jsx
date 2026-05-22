@@ -5,21 +5,28 @@ const AgroMartIndex = () => {
 
   const navigate = useNavigate();
 
-  const customerId = localStorage.getItem("customerId");
-
   // ================= NAVIGATION =================
 
   const handleStart = () => {
 
-    if (customerId) {
+   navigate("/customerlogin")
 
-      navigate("/customer/home");
+  };
 
-    } else {
+  // ================= JOIN NOW =================
 
-      navigate("/customer/login");
+  const handleJoinNow = () => {
 
-    }
+    navigate("/customerlogin")
+
+  };
+
+  // ================= CATEGORY CLICK =================
+
+  const handleCategoryClick = () => {
+
+    navigate("/customerlogin")
+
   };
 
   // ================= CATEGORIES =================
@@ -178,9 +185,7 @@ const AgroMartIndex = () => {
             {/* JOIN NOW */}
 
             <button
-              onClick={() =>
-                navigate("/customer/customerregister")
-              }
+              onClick={handleJoinNow}
               style={{
                 backgroundColor: "black",
                 color: "white",
@@ -420,7 +425,7 @@ const AgroMartIndex = () => {
 
             <div
               key={i}
-              onClick={handleStart}
+              onClick={handleCategoryClick}
               style={{
                 textAlign: "center",
                 cursor: "pointer",

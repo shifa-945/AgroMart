@@ -6,11 +6,23 @@ import {
   Heart,
   ShoppingCart,
   User,
+  LogOut,
 } from "lucide-react";
 
 function CustomerMenu({ setSelectedCategory }) {
 
   const navigate = useNavigate();
+
+  // LOGOUT FUNCTION
+  const handleLogout = () => {
+
+    localStorage.removeItem("customerId");
+
+    alert("Logout successful");
+
+    navigate("/customerlogin");
+
+  };
 
   return (
 
@@ -43,7 +55,7 @@ function CustomerMenu({ setSelectedCategory }) {
               Home
             </button>
 
-            {/* 🍎 FRUITS FILTER (UPDATED CLEAN LOGIC) */}
+            {/* 🍎 FRUITS FILTER */}
             <button
               onClick={() => {
                 if (setSelectedCategory) {
@@ -56,7 +68,7 @@ function CustomerMenu({ setSelectedCategory }) {
               Fruits
             </button>
 
-            {/* 🥕 VEGETABLES FILTER (UPDATED CLEAN LOGIC) */}
+            {/* 🥕 VEGETABLES FILTER */}
             <button
               onClick={() => {
                 if (setSelectedCategory) {
@@ -69,7 +81,7 @@ function CustomerMenu({ setSelectedCategory }) {
               Vegetables
             </button>
 
-            {/* 🟢 ALL PRODUCTS (NEW ADDITION - OPTIONAL BUT USEFUL) */}
+            {/* 🟢 ALL PRODUCTS */}
             <button
               onClick={() => {
                 if (setSelectedCategory) {
@@ -103,6 +115,15 @@ function CustomerMenu({ setSelectedCategory }) {
             <Link to="/customer/orders">
               <User className="w-6 h-6 text-green-700 cursor-pointer" />
             </Link>
+
+            {/* LOGOUT */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium"
+            >
+              <LogOut size={20} />
+              Logout
+            </button>
 
           </div>
 
