@@ -38,15 +38,27 @@ function CustomerLogin() {
         
       )
       console.log(response.data)
+alert("Login Successful")
 
-      alert("Login Successful")
+// TOKEN
+localStorage.setItem(
+  "token",
+  response.data.token
+)
 
-      localStorage.setItem(
-        "customerId",
-        response.data.id
-      )
+// USER ID
+localStorage.setItem(
+  "user_id",
+  response.data.user_id
+)
 
-      navigate("/customer/dashboard")
+// CUSTOMER ID
+localStorage.setItem(
+  "customer_id",
+  response.data.customer_id
+)
+
+navigate("/customer/dashboard")
 
     } catch (error) {
 

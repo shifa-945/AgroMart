@@ -21,7 +21,14 @@ function FarmerDashboard() {
 
   const [recentOrders, setRecentOrders] = useState([]);
 
-  const farmerId = localStorage.getItem("farmerId");
+ const farmerId = localStorage.getItem("farmer_id");
+  const token = localStorage.getItem("token");
+
+const authHeaders = {
+  headers: {
+    Authorization: `Token ${token}`,
+  },
+};
 
   // ================= FETCH DATA =================
 
@@ -41,11 +48,11 @@ function FarmerDashboard() {
 
     try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/farmers/${farmerId}/`
-      );
-
-      setFarmerName(res.data.full_name);
+     const res = await axios.get(
+  `http://127.0.0.1:8000/api/farmers/${farmerId}/`,
+  authHeaders
+);
+      setFarmerName(res.data.user);
 
     } catch (err) {
 
@@ -58,58 +65,50 @@ function FarmerDashboard() {
 
   const fetchProducts = async () => {
 
-    try {
+  try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/products/?farmer=${farmerId}`
-      );
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/products/?farmer=${farmerId}`,
+      authHeaders
+    );
 
-      setTotalProducts(res.data.length);
+    setTotalProducts(res.data.length);
 
-    } catch (err) {
+  } catch (err) {
 
-      console.log(err);
+    console.log(err);
 
-    }
-  };
+  }
+};
 
   // ================= FETCH ORDERS =================
 
-  const fetchOrders = async () => {
+ const fetchOrders = async () => {
 
-    try {
+  try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/farmer-orders/${farmerId}/`
-      );
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/farmer-orders/${farmerId}/`,
+      authHeaders
+    );
 
-      // TOTAL ORDERS
+    setTotalOrders(res.data.length);
 
-      setTotalOrders(res.data.length);
+    setRecentOrders(res.data);
 
-      // RECENT ORDERS
+    const total = res.data.reduce(
+      (sum, order) => sum + Number(order.total_price),
+      0
+    );
 
-      setRecentOrders(res.data);
+    setTotalEarnings(total);
 
-      // TOTAL EARNINGS
+  } catch (err) {
 
-      const total = res.data.reduce(
+    console.log(err);
 
-        (sum, order) =>
-
-          sum + Number(order.total_price),
-
-        0
-      );
-
-      setTotalEarnings(total);
-
-    } catch (err) {
-
-      console.log(err);
-
-    }
-  };
+  }
+};
 
   return (
 

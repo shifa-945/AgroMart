@@ -34,13 +34,24 @@ function CustomerRegistration() {
   const handleSubmit = async () => {
 
     try {
+const response = await axios.post(
+  "http://127.0.0.1:8000/api/customer-register/",
+  formData
+)
 
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/customers/",
-        formData
-      )
+localStorage.setItem("token", response.data.token)
 
-      alert("Customer Registered Successfully")
+localStorage.setItem(
+  "customer_id",
+  response.data.customer_id
+)
+
+localStorage.setItem(
+  "user_id",
+  response.data.user_id
+)
+
+alert("Customer Registered Successfully")
 
       console.log(response.data)
 

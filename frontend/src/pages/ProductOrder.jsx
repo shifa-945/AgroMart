@@ -52,38 +52,67 @@ function ProductOrder() {
 
   const handlePlaceOrder = async () => {
 
-    try {
+  try {
 
-      if (!product) {
-        alert("Product not loaded");
-        return;
-      }
+    if (!product) {
 
-      const totalPrice =
-        Number(product.price) * quantity;
+      alert("Product not loaded");
 
-      await axios.post(
-        "http://127.0.0.1:8000/api/orders/",
-        {
-          customer: Number(localStorage.getItem("customerId")),
-          product: product.id,
-          quantity: quantity,
-          total_price: totalPrice,
-          ...orderData,
-        }
-      );
-
-      alert("Order Placed Successfully");
-
-    } catch (err) {
-
-      console.log(err);
-      alert("Failed to place order");
+      return;
 
     }
 
-  };
+    const customerId =
+      localStorage.getItem("customer_id");
 
+    const token =
+      localStorage.getItem("token");
+
+    if (!customerId || !token) {
+
+      alert("Please login first");
+
+      return;
+
+    }
+
+   const productPrice =
+  Number(product.discounted_price || product.price);
+
+const totalPrice =
+  productPrice * quantity;
+
+    await axios.post(
+      "http://127.0.0.1:8000/api/orders/",
+      {
+        customer: Number(customerId),
+
+        product: product.id,
+
+        quantity: quantity,
+
+        total_price: totalPrice,
+
+        ...orderData,
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
+
+    alert("Order Placed Successfully");
+
+  } catch (err) {
+
+    console.log(err.response?.data);
+
+    alert("Failed to place order");
+
+  }
+
+};
   if (!product) {
 
     return (
@@ -94,7 +123,9 @@ function ProductOrder() {
 
   }
 
-  const total = quantity * Number(product.price);
+const total =
+  quantity *
+  Number(product.discounted_price || product.price);
 
   return (
 
@@ -200,9 +231,26 @@ function ProductOrder() {
             {product.name}
           </h3>
 
-          <p className="text-gray-600 mt-2">
-            ₹{product.price} / {product.unit}
-          </p>
+         {product.offer_percentage > 0 &&
+ Number(product.discounted_price) < Number(product.price) ? (
+  <div className="mt-2">
+    <p className="text-green-600 font-bold text-xl">
+      ₹{product.discounted_price} / {product.unit}
+    </p>
+
+    <p className="text-gray-400 line-through">
+      ₹{product.price}
+    </p>
+
+    <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">
+      {product.offer_percentage}% OFF
+    </span>
+  </div>
+) : (
+  <p className="text-gray-600 mt-2">
+    ₹{product.price} / {product.unit}
+  </p>
+)}
 
           <div className="flex items-center gap-4 mt-5">
 

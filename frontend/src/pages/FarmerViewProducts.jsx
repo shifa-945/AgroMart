@@ -27,13 +27,19 @@ function FarmerViewProducts() {
 
   useEffect(() => {
 
-    const farmerId = localStorage.getItem("farmerId");
+   const farmerId = localStorage.getItem("farmer_id");
 
-    axios
-      .get(
-        `http://127.0.0.1:8000/api/products/${id}/?farmer=${farmerId}`
-      )
+const token = localStorage.getItem("token");
 
+axios
+  .get(
+    `http://127.0.0.1:8000/api/products/${id}/?farmer=${farmerId}`,
+    {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    }
+  )
       .then((res) => {
 
         setProduct(res.data);
@@ -68,9 +74,16 @@ function FarmerViewProducts() {
 
     try {
 
-      await axios.delete(
-        `http://127.0.0.1:8000/api/products/${product.id}/`
-      );
+     const token = localStorage.getItem("token");
+
+await axios.delete(
+  `http://127.0.0.1:8000/api/products/${product.id}/`,
+  {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  }
+);
 
       alert("Product deleted successfully");
 

@@ -4,10 +4,17 @@ import { ShoppingBag } from "lucide-react"
 
 export async function productLoader() {
 
-  const farmerId = localStorage.getItem("farmerId")
+  const farmerId = localStorage.getItem("farmer_id")
+
+  const token = localStorage.getItem("token")
 
   const res = await fetch(
-    `http://127.0.0.1:8000/api/products/?farmer=${farmerId}`
+    `http://127.0.0.1:8000/api/products/?farmer=${farmerId}`,
+    {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    }
   )
 
   if (!res.ok) {

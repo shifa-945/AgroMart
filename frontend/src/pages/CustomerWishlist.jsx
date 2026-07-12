@@ -14,22 +14,43 @@ function CustomerWishlist() {
   }, []);
 
   const fetchWishlist = async () => {
-    try {
-      const customerId = localStorage.getItem("customerId");
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/wishlist/${customerId}/`
-      );
+  try {
 
-      console.log(res.data);
+    const customerId =
+      localStorage.getItem("customer_id");
 
-      setItems(res.data);
+    const token =
+      localStorage.getItem("token");
 
-    } catch (error) {
-      console.log(error);
+    if (!customerId || !token) {
+
+      navigate("/customer/login");
+
+      return;
+
     }
-  };
 
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/wishlist/${customerId}/`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
+
+    console.log(res.data);
+
+    setItems(res.data);
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+};
   return (
 
     <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6">

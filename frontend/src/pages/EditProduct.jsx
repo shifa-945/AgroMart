@@ -27,27 +27,34 @@ function EditProduct() {
 
   // ================= FETCH PRODUCT =================
 
-  useEffect(() => {
+ useEffect(() => {
 
-    axios
-      .get(`http://127.0.0.1:8000/api/products/${id}/`)
+  const token = localStorage.getItem("token");
 
-      .then((res) => {
+  axios.get(
+    `http://127.0.0.1:8000/api/products/${id}/`,
+    {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    }
+  )
 
-        setProduct(res.data);
+  .then((res) => {
 
-        setPreviewImage(res.data.image);
+    setProduct(res.data);
 
-      })
+    setPreviewImage(res.data.image);
 
-      .catch((err) => {
+  })
 
-        console.log(err);
+  .catch((err) => {
 
-      });
+    console.log(err);
 
-  }, [id]);
+  });
 
+}, [id]);
   // ================= HANDLE INPUT CHANGE =================
 
   const handleChange = (e) => {
@@ -102,31 +109,32 @@ function EditProduct() {
 
     }
 
-    try {
+   try {
 
-      await axios.patch(
-        `http://127.0.0.1:8000/api/products/${id}/`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  const token = localStorage.getItem("token");
 
-      alert("Product Updated Successfully");
-
-     navigate(`/farmer/farmerView/${id}`);
-
-    } catch (err) {
-
-      console.log(err.response.data);
-
-      alert("Update Failed");
-
+  await axios.patch(
+    `http://127.0.0.1:8000/api/products/${id}/`,
+    formData,
+    {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
     }
-  };
+  );
+  alert("Product Updated Successfully");
 
+navigate(`/farmer/farmerView/${id}`);
+
+} catch (err) {
+
+  console.log(err.response.data);
+
+  alert("Update Failed");
+
+}
+};
   return (
 
     <div className="min-h-screen bg-[#f5f7fb] p-10">

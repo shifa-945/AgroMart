@@ -4,6 +4,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import axios from "axios";
+
 function FarmerProfile() {
 
   const [profileImage, setProfileImage] = useState("/farmer.png");
@@ -35,100 +36,131 @@ function FarmerProfile() {
     ifsc_code: "",
     account_holder: ""
   });
-const farmerId = localStorage.getItem("farmerId")
 
-useEffect(() => {
+const farmerId = localStorage.getItem("farmer_id");
 
-  const fetchFarmerProfile = async () => {
+  useEffect(() => {
 
-    try {
+    const fetchFarmerProfile = async () => {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/farmers/${farmerId}/`
-      );
+      try {
 
-      // LOAD ALL DATA
-      setFormData((prev) => ({
-        ...prev,
-        ...res.data
-      }));
+        const token = localStorage.getItem("token");
 
-      // LOAD SAVED IMAGE
-      if (res.data.profile_photo) {
+        const res = await axios.get(
+          `http://127.0.0.1:8000/api/farmers/${farmerId}/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
 
-        setProfileImage(res.data.profile_photo);
+        // LOAD ALL DATA
+        setFormData((prev) => ({
+          ...prev,
+          ...res.data
+        }));
 
-      } else {
+        // LOAD SAVED IMAGE
+        if (res.data.profile_photo) {
 
-        setProfileImage("/farmer.png");
+          setProfileImage(res.data.profile_photo);
+
+        } else {
+
+          setProfileImage("/farmer.png");
+
+        }
+
+      } catch (err) {
+
+       console.log("ERROR DATA:", err.response?.data);
+console.log("ERROR STATUS:", err.response?.status);
+console.log("ERROR MESSAGE:", err.message);
 
       }
 
-    } catch (err) {
+    };
 
-      console.log(err);
+    fetchFarmerProfile();
 
-    }
-
-  };
-
-  fetchFarmerProfile();
-
-}, []);
+  }, [farmerId]);
 
   // IMAGE UPLOAD
   const handleImageUpload = (e) => {
-  const file = e.target.files[0];
 
-  if (file) {
+    const file = e.target.files[0];
 
-    // IMAGE PREVIEW
-    setProfileImage(URL.createObjectURL(file));
+    if (file) {
 
-    // REAL FILE FOR DATABASE
-    setProfilePhotoFile(file);
-  }
-};
-  // INPUT CHANGE HANDLER (HOOK FIX)
+      // IMAGE PREVIEW
+      setProfileImage(URL.createObjectURL(file));
+
+      // REAL FILE FOR DATABASE
+      setProfilePhotoFile(file);
+
+    }
+  };
+
+  // INPUT CHANGE HANDLER
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+
   };
 
-  // SAVE FUNCTION (FIXED)
+  // SAVE FUNCTION
   const handleSaveProfile = async () => {
-  try {
-    const form = new FormData();
 
-    Object.keys(formData).forEach((key) => {
-      form.append(key, formData[key] ?? "");
-    });
+    try {
 
-    // ✅ IMPORTANT FIX: REMOVE empty file fields issue
-    if (profilePhotoFile) {
-      form.append("profile_photo", profilePhotoFile);
+      const token = localStorage.getItem("token");
+
+      const form = new FormData();
+
+      // append normal fields
+      Object.keys(formData).forEach((key) => {
+        form.append(key, formData[key] ?? "");
+      });
+
+      // append image only if selected
+      if (profilePhotoFile) {
+        form.append("profile_photo", profilePhotoFile);
+      }
+
+      const res = await axios.patch(
+        `http://127.0.0.1:8000/api/farmers/${farmerId}/`,
+        form,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(res.data);
+
+      // update image after save
+      if (res.data.profile_photo) {
+        setProfileImage(res.data.profile_photo);
+      }
+
+      alert("Profile Saved Successfully!");
+
+    } catch (err) {
+
+      console.log(err.response?.data || err.message);
+      alert("Save Failed");
+
     }
 
-    const res = await axios.patch(
-      `http://127.0.0.1:8000/api/farmers/${farmerId}/`,
-      form,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }
-    );
+  };
 
-    console.log(res.data);
-    alert("Profile Saved Successfully!");
-
-  } catch (err) {
-    console.log(err.response?.data);
-    alert("Save Failed");
-  }
-};
   return (
     <div className="flex-1 bg-gray-100 p-3 sm:p-5 lg:p-8 min-h-screen overflow-y-auto">
 
@@ -161,9 +193,9 @@ useEffect(() => {
               />
 
               <div>
-              <h3 className="font-semibold text-gray-800">
-  {formData.full_name}
-</h3>
+                <h3 className="font-semibold text-gray-800">
+                  {formData.full_name}
+                </h3>
 
                 <p className="text-sm text-gray-500">
                   Farmer
@@ -238,12 +270,12 @@ useEffect(() => {
                   </label>
 
                   <input
-  type="text"
-  name="full_name"
-  value={formData.full_name}
-  onChange={handleChange}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
-/>
+                    type="text"
+                    name="full_name"
+                    value={formData.full_name}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
+                  />
                 </div>
 
                 <div>
@@ -252,12 +284,12 @@ useEffect(() => {
                   </label>
 
                   <input
-  type="text"
-  name="phone"
-  value={formData.phone}
-  onChange={handleChange}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
-/>
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
+                  />
                 </div>
 
                 <div>
@@ -266,12 +298,12 @@ useEffect(() => {
                   </label>
 
                   <input
-  type="email"
-  name="email"
-  value={formData.email}
-  onChange={handleChange}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
-/>
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
+                  />
                 </div>
 
                 <div>
@@ -280,15 +312,16 @@ useEffect(() => {
                   </label>
 
                   <select
-  name="gender"
-  value={formData.gender}
-  onChange={handleChange}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
->
-  <option>Male</option>
-  <option>Female</option>
-  <option>Other</option>
-</select>
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 <div>
@@ -296,13 +329,13 @@ useEffect(() => {
                     Date of Birth
                   </label>
 
-                 <input
-  type="date"
-  name="date_of_birth"
-  value={formData.date_of_birth}
-  onChange={handleChange}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
-/>
+                  <input
+                    type="date"
+                    name="date_of_birth"
+                    value={formData.date_of_birth || ""}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
+                  />
                 </div>
 
               </div>
@@ -326,12 +359,12 @@ useEffect(() => {
                 </label>
 
                 <input
-  type="text"
-  name="village"
-  value={formData.village}
-  onChange={handleChange}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3"
-/>
+                  type="text"
+                  name="village"
+                  value={formData.village}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3"
+                />
               </div>
 
               <div>
@@ -340,12 +373,12 @@ useEffect(() => {
                 </label>
 
                 <input
-  type="text"
-  name="state"
-  value={formData.state}
-  onChange={handleChange}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3"
-/>
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3"
+                />
               </div>
 
               <div>
@@ -417,9 +450,10 @@ useEffect(() => {
                     onChange={handleChange}
                     className="w-full border border-gray-300 rounded-xl px-4 py-3"
                   >
-                    <option>Organic</option>
-                    <option>Natural</option>
-                    <option>Traditional</option>
+                    <option value="">Select Type</option>
+                    <option value="Organic">Organic</option>
+                    <option value="Natural">Natural</option>
+                    <option value="Traditional">Traditional</option>
                   </select>
                 </div>
 
@@ -548,12 +582,12 @@ useEffect(() => {
                 </label>
 
                 <input
-  type="text"
-  name="bank_name"
-  value={formData.bank_name}
-  onChange={handleChange}
-  className="w-full border border-gray-300 rounded-xl px-4 py-3"
-/>
+                  type="text"
+                  name="bank_name"
+                  value={formData.bank_name}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3"
+                />
               </div>
 
               <div>
@@ -606,11 +640,11 @@ useEffect(() => {
           <div className="flex justify-center mt-8">
 
             <button
-  onClick={handleSaveProfile}
-  className="bg-green-600 hover:bg-green-700 text-white px-12 py-4 rounded-2xl font-semibold text-lg transition"
->
-  Save Profile
-</button>
+              onClick={handleSaveProfile}
+              className="bg-green-600 hover:bg-green-700 text-white px-12 py-4 rounded-2xl font-semibold text-lg transition"
+            >
+              Save Profile
+            </button>
 
           </div>
 

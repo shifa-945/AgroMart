@@ -2,13 +2,17 @@ from rest_framework import serializers
 from .models import FarmerProfile, Product, Customer, Review,Order,Cart, Wishlist
 from django.db import models
 
-
 class FarmerProfileSerializer(serializers.ModelSerializer):
+
+    user = serializers.StringRelatedField()
+    full_name = serializers.CharField(
+        source="user.username",
+        read_only=True
+    )
 
     class Meta:
         model = FarmerProfile
-        fields = '__all__'
-
+        fields = "__all__"
 
 class ProductSerializer(serializers.ModelSerializer):
 
@@ -20,6 +24,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     # CALCULATE REMAINING STOCK
     remaining_stock = serializers.SerializerMethodField()
+
+    # SHOW DISCOUNTED PRICE
+    discounted_price = serializers.ReadOnlyField()
 
     class Meta:
         model = Product

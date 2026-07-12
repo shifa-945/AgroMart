@@ -12,7 +12,7 @@ function FarmerEarnings() {
 
   const [totalEarnings, setTotalEarnings] = useState(0);
 
-  const farmerId = localStorage.getItem("farmerId");
+ const farmerId = localStorage.getItem("farmer_id");
 
   useEffect(() => {
 
@@ -24,35 +24,42 @@ function FarmerEarnings() {
 
   const fetchEarnings = async () => {
 
-    try {
+  try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/farmer-orders/${farmerId}/`
-      );
+    const token =
+      localStorage.getItem("token");
 
-      setOrders(res.data);
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/farmer-orders/${farmerId}/`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
 
-      // TOTAL EARNINGS
+    setOrders(res.data);
 
-      const total = res.data.reduce(
+    // TOTAL EARNINGS
 
-        (sum, order) =>
+    const total = res.data.reduce(
 
-          sum + Number(order.total_price),
+      (sum, order) =>
 
-        0
-      );
+        sum + Number(order.total_price),
 
-      setTotalEarnings(total);
+      0
+    );
 
-    } catch (err) {
+    setTotalEarnings(total);
 
-      console.log(err);
+  } catch (err) {
 
-    }
+    console.log(err.response?.data);
 
-  };
+  }
 
+};
   return (
 
     <div className="p-6 bg-gray-50 min-h-screen">

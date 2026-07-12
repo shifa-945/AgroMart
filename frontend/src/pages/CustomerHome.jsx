@@ -18,8 +18,11 @@ function CustomerHome() {
 
   const navigate = useNavigate();
 
-  const customerId =
-    localStorage.getItem("customerId");
+const customerId =
+  localStorage.getItem("customer_id");
+
+const token =
+  localStorage.getItem("token");
 
   // ================= WISHLIST ADDED (ONLY NEW PART) =================
   const [wishlist, setWishlist] = useState([]);
@@ -31,9 +34,16 @@ function CustomerHome() {
 
   const fetchWishlist = async () => {
     try {
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/wishlist/${customerId}/`
-      );
+    if (!customerId || !token) return;
+
+const res = await axios.get(
+  `http://127.0.0.1:8000/api/wishlist/${customerId}/`,
+  {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  }
+);
 
       setWishlist(res.data);
 
@@ -46,13 +56,24 @@ function CustomerHome() {
     e.stopPropagation();
 
     try {
-      await axios.post(
-        "http://127.0.0.1:8000/api/wishlist/toggle/",
-        {
-          customer: Number(customerId),
-          product: Number(productId),
-        }
-      );
+     if (!customerId || !token) {
+  alert("Please login first");
+  navigate("/customer/login");
+  return;
+}
+
+await axios.post(
+  "http://127.0.0.1:8000/api/wishlist/toggle/",
+  {
+    customer: Number(customerId),
+    product: Number(productId),
+  },
+  {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  }
+);
 
       fetchWishlist(); // refresh
 
@@ -92,14 +113,25 @@ function CustomerHome() {
 
     try {
 
-      await axios.post(
-        "http://127.0.0.1:8000/api/cart/",
-        {
-          customer: Number(customerId),
-          product_id: productId,
-          quantity: 1,
-        }
-      );
+     if (!customerId || !token) {
+  alert("Please login first");
+  navigate("/customer/login");
+  return;
+}
+
+await axios.post(
+  "http://127.0.0.1:8000/api/cart/",
+  {
+    customer: Number(customerId),
+    product_id: productId,
+    quantity: 1,
+  },
+  {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  }
+);
 
       alert("Product added to cart");
 
@@ -235,22 +267,39 @@ function CustomerHome() {
                   {p.category}
 
                 </p>
+<div className="mt-3">
 
-                <div className="flex justify-between items-center mt-3">
+  {p.offer_percentage > 0 ? (
 
-                  <span className="text-2xl font-bold text-green-700">
+    <>
 
-                    ₹{p.price}
+      <div className="flex items-center gap-2">
 
-                  </span>
+        <span className="text-2xl font-bold text-green-700">
+          ₹{p.discounted_price}
+        </span>
 
-                  <span className="text-sm text-gray-400 line-through">
+        <span className="text-sm text-gray-400 line-through">
+          ₹{p.price}
+        </span>
 
-                    ₹{p.price + 20}
+      </div>
 
-                  </span>
+      <span className="inline-block mt-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+        {p.offer_percentage}% OFF
+      </span>
 
-                </div>
+    </>
+
+  ) : (
+
+    <span className="text-2xl font-bold text-green-700">
+      ₹{p.price}
+    </span>
+
+  )}
+
+</div>
 
                 <div className="flex items-center gap-1 mt-2">
 

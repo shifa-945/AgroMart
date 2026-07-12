@@ -12,41 +12,63 @@ function FarmerOrders() {
   }, []);
 
   // ================= UPDATE STATUS =================
-const updateStatus = async (orderId, status) => {
 
-  console.log("BUTTON CLICKED");
+  const updateStatus = async (orderId, status) => {
 
-  try {
+    try {
 
-    const response = await axios.patch(
-      `http://127.0.0.1:8000/api/update-order-status/${orderId}/`,
-      {
-        status: status,
-      }
-    );
+      const token =
+        localStorage.getItem("token");
 
-    console.log("PATCH RESPONSE:", response.data);
+      await axios.patch(
+        `http://127.0.0.1:8000/api/update-order-status/${orderId}/`,
+        {
+          status: status,
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
 
-    alert("Status Updated");
+      alert("Status Updated");
 
-    fetchOrders();
+      fetchOrders();
 
-  } catch (error) {
+    } catch (error) {
 
-    console.log("PATCH ERROR:", error);
+      console.log(error.response?.data);
 
-  }
-};
+    }
+
+  };
+
   // ================= FETCH ORDERS =================
 
   const fetchOrders = async () => {
 
-    const farmerId = localStorage.getItem("farmerId");
-
     try {
 
+      const farmerId =
+        localStorage.getItem("farmer_id");
+
+      const token =
+        localStorage.getItem("token");
+
+      if (!farmerId || !token) {
+
+        return;
+
+      }
+
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/farmer-orders/${farmerId}/`
+        `http://127.0.0.1:8000/api/farmer-orders/${farmerId}/`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
       );
 
       console.log(response.data);
@@ -55,9 +77,10 @@ const updateStatus = async (orderId, status) => {
 
     } catch (error) {
 
-      console.log(error);
+      console.log(error.response?.data);
 
     }
+
   };
 
   return (
@@ -84,7 +107,7 @@ const updateStatus = async (orderId, status) => {
             {/* PRODUCT */}
 
             <h2 className="text-2xl font-bold text-green-700">
-              {order.product_name || order.product?.name}
+              {order.product_name}
             </h2>
 
             {/* DETAILS */}
@@ -137,35 +160,42 @@ const updateStatus = async (orderId, status) => {
 
             </div>
 
-          {/* STATUS BUTTONS */}
-<div className="flex gap-3 mt-4">
+            {/* STATUS BUTTONS */}
 
-  {/* SHIP BUTTON */}
-  {order.order_status !== "Shipped" &&
-   order.order_status !== "Delivered" && (
+            <div className="flex gap-3 mt-4">
 
-    <button
-      onClick={() => updateStatus(order.id, "Shipped")}
-      className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg"
-    >
-      Ship Order
-    </button>
+              {/* SHIP BUTTON */}
 
-  )}
+              {order.order_status !== "Shipped" &&
+               order.order_status !== "Delivered" && (
 
-  {/* DELIVER BUTTON */}
-  {order.order_status !== "Delivered" && (
+                <button
+                  onClick={() =>
+                    updateStatus(order.id, "Shipped")
+                  }
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Ship Order
+                </button>
 
-    <button
-      onClick={() => updateStatus(order.id, "Delivered")}
-      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-    >
-      Deliver Order
-    </button>
+              )}
 
-  )}
+              {/* DELIVER BUTTON */}
 
-</div>
+              {order.order_status !== "Delivered" && (
+
+                <button
+                  onClick={() =>
+                    updateStatus(order.id, "Delivered")
+                  }
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                >
+                  Deliver Order
+                </button>
+
+              )}
+
+            </div>
 
           </div>
 
@@ -176,6 +206,7 @@ const updateStatus = async (orderId, status) => {
     </div>
 
   );
+
 }
 
 export default FarmerOrders;

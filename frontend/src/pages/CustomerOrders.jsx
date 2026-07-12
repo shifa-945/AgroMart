@@ -22,23 +22,38 @@ function CustomerOrders() {
 
   const fetchOrders = async () => {
 
-    try {
+  try {
 
-      const customerId = localStorage.getItem("customerId");
+    const customerId =
+      localStorage.getItem("customer_id");
 
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/customer-orders/${customerId}/`
-      );
+    const token =
+      localStorage.getItem("token");
 
-      setOrders(response.data);
+    if (!customerId || !token) {
 
-    } catch (error) {
-
-      console.log(error);
+      return;
 
     }
 
-  };
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/customer-orders/${customerId}/`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
+
+    setOrders(response.data);
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+};
 
   // ================= STATUS DESIGN =================
 

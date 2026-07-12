@@ -9,18 +9,9 @@ const AgroMartIndex = () => {
 
   // ================= NAVIGATION =================
 
-  const handleStart = () => {
-
-    if (customerId) {
-
-      navigate("/customer/home");
-
-    } else {
-
-      navigate("/customer/login");
-
-    }
-  };
+const handleStart = () => {
+  navigate("/CustomerLogin");
+};
 
   // ================= CATEGORIES =================
 
@@ -161,6 +152,9 @@ const AgroMartIndex = () => {
             {/* START SHOPPING */}
 
             <button
+            onClick={() =>
+   navigate("/CustomerLogin")
+  }
               onClick={handleStart}
               style={{
                 backgroundColor: "#4CAF50",
@@ -177,22 +171,20 @@ const AgroMartIndex = () => {
 
             {/* JOIN NOW */}
 
-            <button
-              onClick={() =>
-                navigate("/customer/customerregister")
-              }
-              style={{
-                backgroundColor: "black",
-                color: "white",
-                border: "none",
-                padding: "15px 30px",
-                borderRadius: "50px",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              JOIN NOW
-            </button>
+  <button
+  onClick={() => navigate("/CustomerLogin")}
+  style={{
+    backgroundColor: "black",
+    color: "white",
+    border: "none",
+    padding: "15px 30px",
+    borderRadius: "50px",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
+>
+  JOIN NOW
+</button>
 
           </div>
 

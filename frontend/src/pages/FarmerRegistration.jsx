@@ -17,36 +17,24 @@ const FarmerRegister = () => {
 
   // =========================
   // FORM SUBMIT FUNCTION
-  // =========================
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    e.preventDefault();
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/farmer-register/",
+      formData
+    );
 
-    try {
+    console.log(response.data);
+    alert("Farmer Registration Successful");
 
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/farmers/",
-        formData
-      );
-
-      console.log(response.data);
-
-      alert("Farmer Registration Successful");
-
-    }
-
-    catch (error) {
-
-      console.log(error);
-      console.log(error.response.data);
-      alert("Something went wrong");
-
-      
-
-    }
-
-  };
-
+  } catch (error) {
+    console.log(error);
+    console.log(error.response?.data);
+    alert("Something went wrong");
+  }
+};
   return (
     <div
       style={{

@@ -15,8 +15,11 @@ function CustomerCart() {
 
   const navigate = useNavigate();
 
-  const customerId =
-    localStorage.getItem("customerId");
+const customerId =
+  localStorage.getItem("customer_id");
+
+const token =
+  localStorage.getItem("token");
 
   // ================= FETCH CART =================
 
@@ -28,44 +31,61 @@ function CustomerCart() {
 
   const fetchCart = async () => {
 
-    try {
+  try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/cart/?customer=${customerId}`
-      );
+    if (!customerId || !token) {
 
-      console.log(res.data);
+      navigate("/customer/login");
 
-      setCartItems(res.data);
-
-    } catch (err) {
-
-      console.log(err);
+      return;
 
     }
 
-  };
+    const res = await axios.get(
+      `http://127.0.0.1:8000/api/cart/?customer=${customerId}`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
+
+    console.log(res.data);
+
+    setCartItems(res.data);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+
+};
 
   // ================= REMOVE ITEM =================
 
-  const removeItem = async (id) => {
+ const removeItem = async (id) => {
 
-    try {
+  try {
 
-      await axios.delete(
-        `http://127.0.0.1:8000/api/cart/${id}/`
-      );
+    await axios.delete(
+      `http://127.0.0.1:8000/api/cart/${id}/`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
 
-      fetchCart();
+    fetchCart();
 
-    } catch (err) {
+  } catch (err) {
 
-      console.log(err);
+    console.log(err);
 
-    }
+  }
 
-  };
-
+};
   // ================= TOTAL PRICE =================
 
   const totalPrice = cartItems.reduce(

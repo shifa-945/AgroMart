@@ -6,6 +6,7 @@ import {
   Heart,
   ShoppingCart,
   User,
+   LogOut,
 } from "lucide-react";
 
 function CustomerMenu({ setSelectedCategory }) {
@@ -99,10 +100,21 @@ function CustomerMenu({ setSelectedCategory }) {
               className="text-green-700 cursor-pointer hover:text-green-800"
             />
 
-            {/* USER */}
-            <Link to="/customer/orders">
-              <User className="w-6 h-6 text-green-700 cursor-pointer" />
-            </Link>
+           {/* USER */}
+<Link to="/customer/orders">
+  <User className="w-6 h-6 text-green-700 cursor-pointer" />
+</Link>
+
+{/* LOGOUT */}
+<LogOut
+  onClick={() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("customer_id");
+    localStorage.removeItem("user_id");
+    navigate("/CustomerLogin");
+  }}
+  className="w-6 h-6 text-red-500 cursor-pointer hover:text-red-700"
+/>
 
           </div>
 

@@ -1,66 +1,74 @@
 from django.db import models
 
 # Create your models here.
+
 from django.contrib.auth.models import User
-from django.db import models
 from django.db import models
 
 class FarmerProfile(models.Model):
 
-    # LOGIN / BASIC DETAILS
-    full_name = models.CharField(max_length=100, null=True, blank=True)
-    phone = models.CharField(max_length=10, null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
-    password = models.CharField(max_length=100, null=True, blank=True)
-    confirm_password = models.CharField(max_length=100, null=True, blank=True)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
 
-    
+    phone = models.CharField(max_length=10, null=True, blank=True)
+
     gender = models.CharField(max_length=20, null=True, blank=True)
+
     date_of_birth = models.DateField(null=True, blank=True)
+
     village = models.CharField(max_length=100, null=True, blank=True)
+
     state = models.CharField(max_length=100, null=True, blank=True)
+
     district = models.CharField(max_length=100, null=True, blank=True)
-    
+
     pincode = models.CharField(max_length=10, null=True, blank=True)
 
-    
     farm_name = models.CharField(max_length=150, null=True, blank=True)
+
     farming_type = models.CharField(max_length=100, null=True, blank=True)
+
     experience = models.CharField(max_length=50, null=True, blank=True)
+
     farm_size = models.CharField(max_length=50, null=True, blank=True)
+
     main_products = models.TextField(null=True, blank=True)
+
     bio = models.TextField(null=True, blank=True)
 
-    # PROFILE PHOTO
     profile_photo = models.ImageField(
         upload_to='farmer_profiles/',
         null=True,
         blank=True
     )
 
-    # DOCUMENTS
     id_proof = models.FileField(
         upload_to='farmer_documents/',
         null=True,
         blank=True
     )
 
-    # BANK DETAILS
     bank_name = models.CharField(max_length=100, null=True, blank=True)
+
     account_number = models.CharField(max_length=50, null=True, blank=True)
+
     ifsc_code = models.CharField(max_length=20, null=True, blank=True)
+
     account_holder = models.CharField(max_length=100, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.full_name
+        return self.user.username
     
 
 
+from datetime import date
 
 class Product(models.Model):
 
-    # CONNECT PRODUCT TO FARMER
     farmer = models.ForeignKey(
         FarmerProfile,
         on_delete=models.CASCADE,
@@ -70,9 +78,7 @@ class Product(models.Model):
     )
 
     name = models.CharField(max_length=200)
-
     category = models.CharField(max_length=100)
-
     subcategory = models.CharField(max_length=100)
 
     price = models.DecimalField(
@@ -81,43 +87,52 @@ class Product(models.Model):
     )
 
     unit = models.CharField(max_length=50)
-
     stockQuantity = models.PositiveIntegerField()
-
     minimumOrderQuantity = models.PositiveIntegerField()
 
     description = models.TextField()
 
-    image = models.ImageField(
-        upload_to="products/"
-    )
+    offer_percentage = models.PositiveIntegerField(default=0)
+    offer_start_date = models.DateField(null=True, blank=True)
+    offer_end_date = models.DateField(null=True, blank=True)
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    image = models.ImageField(upload_to="products/")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def discounted_price(self):
+        today = date.today()
+
+        if (
+            self.offer_percentage > 0
+            and self.offer_start_date
+            and self.offer_end_date
+            and self.offer_start_date <= today <= self.offer_end_date
+        ):
+            discount = (self.price * self.offer_percentage) / 100
+            return self.price - discount
+
+        return self.price
 
     def __str__(self):
         return self.name
-
-
+    
 class Customer(models.Model):
 
-    full_name = models.CharField(max_length=100)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
 
     phone = models.CharField(max_length=15)
 
-    email = models.EmailField(unique=True)
-
     address = models.TextField()
-
-    password = models.CharField(max_length=100)
-
-    confirm_password = models.CharField(max_length=100)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.full_name
+        return self.user.username
     
 
 class Review(models.Model):

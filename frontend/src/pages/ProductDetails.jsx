@@ -27,8 +27,8 @@ function ProductDetails() {
 
   const [reviews, setReviews] = useState([]);
 
-  const customerId =
-    localStorage.getItem("customerId");
+const customerId = localStorage.getItem("customer_id");
+const token = localStorage.getItem("token");
 
   // ================= FETCH PRODUCT =================
 
@@ -90,15 +90,26 @@ function ProductDetails() {
 
     try {
 
-      await axios.post(
-        "http://127.0.0.1:8000/api/reviews/",
-        {
-          product: Number(id),
-          customer: Number(customerId),
-          rating: Number(rating),
-          comment: reviewText,
-        }
-      );
+      if (!customerId || !token) {
+  alert("Please login first");
+  navigate("/customer/login");
+  return;
+}
+
+await axios.post(
+  "http://127.0.0.1:8000/api/reviews/",
+  {
+    product: Number(id),
+    customer: Number(customerId),
+    rating: Number(rating),
+    comment: reviewText,
+  },
+  {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  }
+);
 
       setReviewText("");
 
@@ -248,16 +259,25 @@ function ProductDetails() {
 
                   try {
 
-                    await axios.post(
-                      "http://127.0.0.1:8000/api/cart/",
-                      {
-                        customer: Number(
-                          customerId
-                        ),
-                        product_id: product.id,
-                        quantity: quantity,
-                      }
-                    );
+                   if (!customerId || !token) {
+  alert("Please login first");
+  navigate("/customer/login");
+  return;
+}
+
+await axios.post(
+  "http://127.0.0.1:8000/api/cart/",
+  {
+    customer: Number(customerId),
+    product_id: product.id,
+    quantity: quantity,
+  },
+  {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  }
+);
 
                     alert(
                       "Product added to cart"

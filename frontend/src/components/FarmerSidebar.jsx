@@ -18,8 +18,7 @@ function FarmerSidebar()
 {
   const [profileImage, setProfileImage] = useState("/farmer.png");
 const [farmerName, setFarmerName] = useState("");
-
-const farmerId = localStorage.getItem("farmerId");
+const farmerId = localStorage.getItem("farmer_id");
 
 useEffect(() => {
 
@@ -27,8 +26,15 @@ useEffect(() => {
 
     try {
 
+      const token = localStorage.getItem("token");
+
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/farmers/${farmerId}/`
+        `http://127.0.0.1:8000/api/farmers/${farmerId}/`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
       );
 
       setFarmerName(res.data.full_name);
@@ -41,7 +47,7 @@ useEffect(() => {
 
     } catch (err) {
 
-      console.log(err);
+      console.log(err.response?.data || err.message);
 
     }
 
@@ -50,7 +56,6 @@ useEffect(() => {
   fetchFarmer();
 
 }, []);
-
   return (
     <div className="w-72 h-screen sticky top-0 bg-white border-r border-gray-200 shadow-sm flex flex-col justify-between overflow-y-auto">
 

@@ -7,17 +7,20 @@ import {
 
 function AddProducts() {
 
-  const [products, setProducts] = useState({
-    name: "",
-    category: "",
-    subcategory: "",
-    price: "",
-    unit: "",
-    stockQuantity: "",
-    minimumOrderQuantity: "",
-    description: "",
-    image: null,
-  });
+const [products, setProducts] = useState({
+  name: "",
+  category: "",
+  subcategory: "",
+  price: "",
+  unit: "",
+  stockQuantity: "",
+  minimumOrderQuantity: "",
+  description: "",
+  offer_percentage: "",
+  offer_start_date: "",
+  offer_end_date: "",
+  image: null,
+});
 
   // HANDLE INPUT CHANGES
   const handleChange = (e) => {
@@ -64,18 +67,24 @@ formData.append("image", products.image);
 
 formData.append(
   "farmer",
-  localStorage.getItem("farmerId")
+  localStorage.getItem("farmer_id")
 );
-
+formData.append("offer_percentage", products.offer_percentage);
+formData.append("offer_start_date", products.offer_start_date);
+formData.append("offer_end_date", products.offer_end_date);
+   
     try {
 
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://127.0.0.1:8000/api/products/",
         formData,
         {
+          
           headers: {
-            "Content-Type": "multipart/form-data",
-          },
+   Authorization: `Token ${token}`,
+   "Content-Type": "multipart/form-data",
+},
         }
       );
 
@@ -84,17 +93,20 @@ formData.append(
       alert("Product Added Successfully");
 
       // CLEAR FORM
-      setProducts({
-        name: "",
-        category: "",
-        subcategory: "",
-        price: "",
-        unit: "",
-        stockQuantity: "",
-        minimumOrderQuantity: "",
-        description: "",
-        image: null,
-      });
+setProducts({
+  name: "",
+  category: "",
+  subcategory: "",
+  price: "",
+  unit: "",
+  stockQuantity: "",
+  minimumOrderQuantity: "",
+  description: "",
+  offer_percentage: "",
+  offer_start_date: "",
+  offer_end_date: "",
+  image: null,
+});
 
     } catch (error) {
 
@@ -227,6 +239,55 @@ formData.append(
               </div>
 
             </div>
+
+            {/* OFFER DETAILS */}
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+
+  <div>
+    <label className="block mb-2 font-medium">
+      Discount (%)
+    </label>
+
+    <input
+      type="number"
+      name="offer_percentage"
+      value={products.offer_percentage}
+      onChange={handleChange}
+      placeholder="Enter discount %"
+      className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500"
+    />
+  </div>
+
+  <div>
+    <label className="block mb-2 font-medium">
+      Offer Start Date
+    </label>
+
+    <input
+      type="date"
+      name="offer_start_date"
+      value={products.offer_start_date}
+      onChange={handleChange}
+      className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500"
+    />
+  </div>
+
+  <div>
+    <label className="block mb-2 font-medium">
+      Offer End Date
+    </label>
+
+    <input
+      type="date"
+      name="offer_end_date"
+      value={products.offer_end_date}
+      onChange={handleChange}
+      className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-green-500"
+    />
+  </div>
+
+</div>
 
             {/* STOCK + MINIMUM */}
 
